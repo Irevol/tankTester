@@ -32,12 +32,16 @@ if st.button("Evaluate"):
         try:
             sample_size = int(sample_size_input)
         except ValueError:
-            st.error(f"Sample size should be a number (got {sample_size_input})")
+            st.error(f"Sample size should be an integer (got {sample_size_input})")
             exit()
     try:
         pop_size = int(pop_size_input)
     except ValueError:
-        st.error(f"Pop. size should be a number (got {sample_size_input})")
+        st.error(f"Pop. size should be an integer (got {sample_size_input})")
+        exit()
+
+    if (pop_size < sample_size):
+        st.error("Population size can't be less than sample size")
         exit()
 
     expression_input = expression_input.replace("max", "_max")
@@ -48,7 +52,7 @@ if st.button("Evaluate"):
         exit()
 
     #numbers
-    data = test_strategy(strategy=expression, fixed_ss=None)
+    data = test_strategy(strategy=expression, fixed_ss=sample_size)
     _mean, _median, _sd = distribution_data(data)
     st.markdown(f"""
 |  |  |
