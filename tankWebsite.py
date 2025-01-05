@@ -3,7 +3,6 @@ import streamlit as st
 import matplotlib.pyplot as plt
 
 st.header("German Tank Tester")
-st.caption("v 1.1")
 st.markdown("""
 Use the following variables:
 - sd (for standard deviation)
@@ -11,6 +10,10 @@ Use the following variables:
 - mean
 - median
 - ss (for sample size)
+Other notes:
+- samples without replacement (which turns out to be pretty important)
+- may have problems I haven't noticed yet
+- performs 10 000 trials when testing
 """)
             
 expression_input = st.text_input("Enter expresion", "(sd+max)*0.8")
@@ -28,21 +31,24 @@ if st.button("Evaluate"):
     expression = None
     pop_size = None
 
-    if sample_size_input != "":
-        try:
-            sample_size = int(sample_size_input)
-        except ValueError:
-            st.error(f"Sample size should be an integer (got {sample_size_input})")
-            exit()
     try:
         pop_size = int(pop_size_input)
     except ValueError:
         st.error(f"Pop. size should be an integer (got {sample_size_input})")
         exit()
 
-    if (pop_size < sample_size):
-        st.error("Population size can't be less than sample size")
-        exit()
+    if sample_size_input == "":
+        sample_size_input = None
+
+    if sample_size_input != None:
+        try:
+            sample_size = int(sample_size_input)
+            if (pop_size < sample_size):
+                st.error("Population size can't be less than sample size")
+                exit()
+        except ValueError:
+            st.error(f"Sample size should be an integer (got {sample_size_input})")
+            exit()
 
     expression_input = expression_input.replace("max", "_max")
     expression_input = expression_input.replace("^", "**")
@@ -52,7 +58,7 @@ if st.button("Evaluate"):
         exit()
 
     #numbers
-    data = test_strategy(strategy=expression, fixed_ss=sample_size)
+    data = test_strategy(strategy=expression, fixed_ss=sample_size, n=pop_size)
     _mean, _median, _sd = distribution_data(data)
     st.markdown(f"""
 |  |  |
