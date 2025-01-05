@@ -3,6 +3,7 @@ import streamlit as st
 import matplotlib.pyplot as plt
 
 st.header("German Tank Tester")
+st.caption("v 1.1")
 st.markdown("""
 Use the following variables:
 - sd (for standard deviation)
@@ -23,7 +24,6 @@ with st.expander("More settings", expanded=False):
 
 if st.button("Evaluate"):
 
-    #make sure input is ready to roll
     sample_size = None
     expression = None
     pop_size = None
@@ -56,7 +56,7 @@ if st.button("Evaluate"):
 | Mean error | {round(pop_size-_mean,3)} ({round(((pop_size-_mean)/pop_size)*100,3)}%) |
 | Median error | {round(pop_size-_median,3)} ({round(((pop_size-_median)/pop_size)*100,3)}%) |
 | Standard deviation of predictions | {round(_sd,3)} ({round((_sd/pop_size)*100, 3)}%) |
-| Probability of within 5% | {round(score_distribution(data),3)} |
+| Probability of within 5% | {round(score_distribution(data, n=pop_size),3)} |
 """)
 
     #plot data
@@ -74,7 +74,7 @@ if st.button("Evaluate"):
             st.write("Generating plot... might take a second")
             y = []
             x = []
-            for ss in range(5, 25):
+            for ss in range(5, 20):
                 ss = ss/100
                 data = test_strategy(strategy=expression, fixed_ss=round(ss*pop_size), n=pop_size)
                 score = score_distribution(data, n=pop_size)
