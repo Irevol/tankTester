@@ -10,6 +10,8 @@ Use the following variables:
 - mean
 - median
 - ss (for sample size)
+""")
+st.markdown("""
 Other notes:
 - samples without replacement (which turns out to be pretty important)
 - may have problems I haven't noticed yet
